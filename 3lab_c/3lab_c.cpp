@@ -17,7 +17,18 @@ private:
     int n;
     std::map<vertex_type, std::map<int,Edge>> map_v;
     std::map<vertex_type, bool>visited;
+    void walk_(const vertex_type& start_vertex/*, std::function<void(const vertex_type&)> action*/)
+    {
+        visited[start_vertex] = true;
+        cout << start_vertex;
+        for (auto it1 = map_v[start_vertex].begin(); it1 != map_v[start_vertex].end(); ++it1) {
+            int next_node = it1->second.id2;
+            if (!visited[next_node]) {
+                walk_(next_node);
+            }
+        }
 
+    }
 public:
     Graph(int n_vert = 0) : n(n_vert) {}
 
@@ -159,32 +170,64 @@ public:
     //size_t degree() const; //степень
     void init()
     {
-        for (auto it1 = visited.begin(); it1 != visited.end(); ++it1)
+        for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
         {
-            it1->second = false;
+            visited[it1->first] = false;
         }
     }
-    void walk_(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
+    void walk(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
     {
         init();
-        for (auto& node : map_v) 
+        /*for (auto& node : map_v) 
         {
-            if (!visited[node.first]) {
-                walk(node.first);
+            if (node.first == start_vertex && !visited[node.first]) {
+                walk_(node.first);
+            }
+        }*/
+        walk_(start_vertex);
+        cout << endl;
+        for (auto& node : visited)
+        {
+            if (!node.second) 
+            {
+                walk_(node.first);
             }
         }
+
     }
-    void walk(const vertex_type& start_vertex/*, std::function<void(const vertex_type&)> action*/)
-    {
-        visited[start_vertex] = true;
-        cout << start_vertex;
-        for (auto it1 = map_v[start_vertex].begin(); it1 != map_v[start_vertex].end(); ++it1) {
-            int next_node = it1->first;
-            if (!visited[next_node]) {
-                walk(next_node);
+    vector<int> Dijkstra(string start, unordered_map<string, unordered_map<string, int>> graph) {
+        unordered_map<string, int> distances;
+        for (auto& [vertex, adj] : graph) {
+            distances[vertex] = INT_MAX;
+        }
+        distances[start] = 0;
+
+        priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
+        pq.push({ 0, start });
+
+        while (!pq.empty()) {
+            auto [dist, vertex] = pq.top();
+            pq.pop();
+
+            if (dist > distances[vertex]) {
+                continue;
+            }
+
+            for (auto& [adjacent, weight] : graph[vertex]) {
+                int newDist = dist + weight;
+                if (newDist < distances[adjacent]) {
+                    distances[adjacent] = newDist;
+                    pq.push({ newDist, adjacent });
+                }
             }
         }
-        
+
+        vector<int> result;
+        for (auto& [vertex, dist] : distances) {
+            result.push_back(dist);
+        }
+
+        return result;
     }
 
     ////поиск кратчайшего пути
@@ -203,23 +246,25 @@ int main()
     tmp.add_vertex(2);
     tmp.add_vertex(3);
     tmp.add_vertex(4);
+    tmp.add_vertex(5);
+    tmp.add_vertex(7);
     tmp.add_edge(1, 2, 16);
     tmp.add_edge(2, 6, 2);
     tmp.add_edge(1, 3, 2);
     tmp.add_edge(3, 2, 9);
     tmp.add_edge(3, 4, 5);
     tmp.add_edge(4, 1, 8);
+    tmp.add_edge(5, 7, 9);
     tmp.Print();
     cout << endl;
-    tmp.remove_vertex(5);
     /*tmp.remove_vertex(1);*/
     tmp.Print();
     cout << endl;
-    tmp.remove_edge(3, 6);
+    /*tmp.remove_edge(3, 6);
     tmp.remove_edge(3, 2);
-    tmp.remove_edge(1, 2);
+    tmp.remove_edge(1, 2);*/
     tmp.Print();
-    tmp.walk_(3, print);
+    tmp.walk(3, print);
     cout << endl;
     return 0;
 }
