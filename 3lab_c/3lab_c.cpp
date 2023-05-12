@@ -28,7 +28,7 @@ public:
     {
         for (auto it = map.begin(); it != map.end(); ++it)
         {
-            out << it->first << ':' << it->second << endl;
+            out << it->first << ':' << it->second ;
         }
         return out;
     }
@@ -73,7 +73,7 @@ public:
     ///////////////////////////////////////////
 
     //проверка-добавление-удаление ребер
-    bool has_edge(const vertex_type& from, const vertex_type& to) const
+    bool has_edge(const vertex_type& from, const vertex_type& to)
     {
         if (has_vertex(from) && has_vertex(to))
         {
@@ -117,41 +117,36 @@ public:
             cout << it->first << ':' << it->second << endl;
         }
     }
-    //bool remove_edge(const vertex_type& from, const vertex_type& to) { // удаление ребра
-    //    std::map<int, Edge>::std::iterator it;
-    //    for (it = map_v[from].begin(); it != map_v[from].end(); it++) {
-    //        if (it->second.id2 == to) {
-    //            map_v[from].erase(it);
-    //            return true;
-    //        }
-    //    }
-    //    return false;
-    //}
-    //bool remove_edge(const vertex_type& from, const vertex_type& to) { // удаление ребра
-    //    map<vertex_type, std::vector<Edge>>::iterator it, itEnd;
-    //    it = map_v.begin();
-    //    itEnd = map_v.end();
-    //    while (it != itEnd)
-    //    {
-    //        
-    //        it++;
-    //    }
-
-    //    for (it = adj[v].begin(); it != adj[v].end(); it++) {
-    //        if (*it == w) {
-    //            adj[v].erase(it);
-    //            break;
-    //        }
-    //    }
-    //    for (it = adj[w].begin(); it != adj[w].end(); it++) {
-    //        if (*it == v) {
-    //            adj[w].erase(it);
-    //            break;
-    //        }
-    //    }
-    //}
-    //bool remove_edge(const Edge& e); //c учетом расстояния
-    //
+    bool remove_edge(const vertex_type& from, const vertex_type& to)  // удаление ребра
+    {
+        if (has_edge(from, to))
+        {
+            for (auto it1 = map_v[from].begin(); it1 != map_v[from].end(); ++it1)
+            {
+                if (it1->second.id2 == to)
+                {
+                    map_v[from].erase(it1);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    bool remove_edge(const Edge& e) //c учетом расстояния
+    {
+        if (has_edge(e))
+        {
+            for (auto it1 = map_v[e.id1].begin(); it1 != map_v[e.id1].end(); ++it1)
+            {
+                if (it1->second.id2 == e.id2 && it1->second.dist == e.dist)
+                {
+                    map_v[e.id1].erase(it1);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     ////получение всех ребер, выходящих из вершины
     //std::vector<Edge> edges(const Vertex& vertex);
@@ -181,10 +176,15 @@ int main()
     tmp.add_edge(3, 4, 5);
     tmp.add_edge(4, 1, 8);
     tmp.Print();
+    cout << endl;
     tmp.remove_vertex(5);
-    tmp.remove_vertex(3);
-    
-   /* tmp.remove_edge(1, 2);*/
+    tmp.remove_vertex(1);
     tmp.Print();
+    cout << endl;
+    tmp.remove_edge(3, 6);
+    tmp.remove_edge(3, 2);
+    tmp.remove_edge(1, 2);
+    tmp.Print();
+    cout << endl;
     return 0;
 }
