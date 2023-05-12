@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <iterator>
+#include <functional>
 using namespace std;
 template<typename vertex_type, typename Distance = double>
 class Graph {
@@ -15,6 +16,7 @@ private:
     };
     int n;
     std::map<vertex_type, std::map<int,Edge>> map_v;
+    std::map<vertex_type, bool>visited;
 
 public:
     Graph(int n_vert = 0) : n(n_vert) {}
@@ -147,20 +149,52 @@ public:
         }
         return false;
     }
-
+    size_t order() const
+    {
+        return n;
+    }
+    /*std::vector<Vertex> vertices() const;*/
     ////получение всех ребер, выходящих из вершины
     //std::vector<Edge> edges(const Vertex& vertex);
-
-    //size_t order() const; //порядок
     //size_t degree() const; //степень
-
+    void init()
+    {
+        for (auto it1 = visited.begin(); it1 != visited.end(); ++it1)
+        {
+            it1->second = false;
+        }
+    }
+    void walk_(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
+    {
+        init();
+        for (auto& node : map_v) 
+        {
+            if (!visited[node.first]) {
+                walk(node.first);
+            }
+        }
+    }
+    void walk(const vertex_type& start_vertex/*, std::function<void(const vertex_type&)> action*/)
+    {
+        visited[start_vertex] = true;
+        cout << start_vertex;
+        for (auto it1 = map_v[start_vertex].begin(); it1 != map_v[start_vertex].end(); ++it1) {
+            int next_node = it1->first;
+            if (!visited[next_node]) {
+                walk(next_node);
+            }
+        }
+        
+    }
 
     ////поиск кратчайшего пути
     //std::vector<Edge> shortest_path(const Vertex& from,
     //    const Vertex& to) const;
-    ////обход
-    //std::vector<Vertex>  walk(const Vertex& start_vertex)const;
 };
+void print(int val)
+{
+    cout << val;
+}
 
 int main()
 {
@@ -178,13 +212,14 @@ int main()
     tmp.Print();
     cout << endl;
     tmp.remove_vertex(5);
-    tmp.remove_vertex(1);
+    /*tmp.remove_vertex(1);*/
     tmp.Print();
     cout << endl;
     tmp.remove_edge(3, 6);
     tmp.remove_edge(3, 2);
     tmp.remove_edge(1, 2);
     tmp.Print();
+    tmp.walk_(3, print);
     cout << endl;
     return 0;
 }
