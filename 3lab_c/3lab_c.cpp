@@ -3,6 +3,7 @@
 #include <vector>
 #include <iterator>
 #include <functional>
+#include <queue>
 using namespace std;
 template<typename vertex_type, typename Distance = double>
 class Graph {
@@ -195,44 +196,64 @@ public:
         }
 
     }
-    vector<int> Dijkstra(string start, unordered_map<string, unordered_map<string, int>> graph) {
-        unordered_map<string, int> distances;
-        for (auto& [vertex, adj] : graph) {
-            distances[vertex] = INT_MAX;
+   
+    std::vector<vertex_type> shortest_path(const vertex_type& from, const vertex_type& to)
+    {
+        std::map<vertex_type, Distance> distances;
+        std::map<vertex_type, vertex_type> prev;
+        for (auto it = map_v.begin(); it != map_v.end(); ++it) {
+            distances[it->first] = INT_MAX;
         }
-        distances[start] = 0;
-
-        priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
-        pq.push({ 0, start });
-
+        priority_queue<pair<Distance, vertex_type>, vector<pair<Distance, vertex_type>>, greater<pair<Distance, vertex_type>>> pq;
+        distances[from] = 0;
+        pq.push({ 0, from });
+        vector<vertex_type> vis;
         while (!pq.empty()) {
-            auto [dist, vertex] = pq.top();
+            Distance dist = pq.top().first;
+            vertex_type vertex = pq.top().second;
             pq.pop();
 
             if (dist > distances[vertex]) {
                 continue;
             }
-
-            for (auto& [adjacent, weight] : graph[vertex]) {
-                int newDist = dist + weight;
-                if (newDist < distances[adjacent]) {
-                    distances[adjacent] = newDist;
-                    pq.push({ newDist, adjacent });
+            
+            
+            for (auto it = map_v[vertex].begin(); it != map_v[vertex].end(); ++it)
+            {
+                double newDist = dist + it->second.dist;
+                if (newDist < distances[it->second.id2]) {
+                    distances[it->second.id2] = newDist;
+                    prev[it->second.id2] = vertex;
+                    pq.push(make_pair(newDist, it->second.id2));
                 }
             }
-        }
+            vector<vertex_type> path;
+            vertex_type current = to;
+            while (current != from) {
+                path.push_back(current);
+                current = prev[current];
+            }
+            path.push_back(from);
+            std::reverse(path.begin(), path.end());
 
-        vector<int> result;
-        for (auto& [vertex, dist] : distances) {
-            result.push_back(dist);
+            return path;
+           /* for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
+            {
+                if (it1->first == vertex)
+                {
+                    for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
+                    {
+                        double newDist = dist + it2->second.dist;
+                        if (newDist < distances[it2->second.id2]) {
+                            distances[it2->second.id2] = newDist;
+                            pq.push({ newDist, it2->second.id2 });
+                        }
+                    }
+                }
+                break;
+            }*/
         }
-
-        return result;
     }
-
-    ////поиск кратчайшего пути
-    //std::vector<Edge> shortest_path(const Vertex& from,
-    //    const Vertex& to) const;
 };
 void print(int val)
 {
@@ -265,6 +286,11 @@ int main()
     tmp.remove_edge(1, 2);*/
     tmp.Print();
     tmp.walk(3, print);
+    std::vector<int> res = tmp.shortest_path(1,4);
+    for (auto i : res)
+    {
+        cout << i;
+    }
     cout << endl;
     return 0;
 }
