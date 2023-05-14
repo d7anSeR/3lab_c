@@ -41,9 +41,9 @@ private:
         visited[start_vertex] = true;
         action(start_vertex);
         for (auto it1 = map_v[start_vertex].begin(); it1 != map_v[start_vertex].end(); ++it1) {
-            int next_node = it1->second.id2;
+            vertex_type next_node = it1->second.id2;
             if (!visited[next_node]) {
-                walk_(next_node);
+                walk_(next_node, action);
             }
         }
 
@@ -126,7 +126,7 @@ public:
     bool add_edge(const vertex_type& from, const vertex_type& to, const Distance& d)
     {
         Edge tmp(from, to, d);
-        if (!has_edge(tmp))
+        if (!has_edge(from, to, d))
         {
             if (has_vertex(from) && has_vertex(to))
             {
@@ -190,18 +190,17 @@ public:
     }
     std::vector<Edge> edges(const vertex_type& vertex)
     {
-        if (!has_vertex(vertex)) return NULL;
         std::vector<Edge> edge_mass;
-        for (auto it1 = map_v[vertes].begin(); it1 != map_v.end(); ++it1)
+        for (auto it1 = map_v[vertex].begin(); it1 != map_v[vertex].end(); ++it1)
         {
             edge_mass.push_back(it1->second);
         }
         return edge_mass;
     }
-    size_t degree() const
+    size_t degree()
     {
         size_t max_edge = -1;
-        for (auto it1 = map_v[vertes].begin(); it1 != map_v.end(); ++it1)
+        for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
         {
             std::vector<Edge> tmp_edges = edges(it1->first);
             if (tmp_edges.size() > max_edge) max_edge = tmp_edges.size();
@@ -224,35 +223,36 @@ public:
                 walk_(node.first);
             }
         }*/
-        walk_(start_vertex);
+        walk_(start_vertex, action);
         action(start_vertex);
         for (auto& node : visited)
         {
             if (!node.second) 
             {
-                walk_(node.first);
+                walk_(node.first, action);
             }
         }
 
     }
     bool check(const vertex_type& from, const vertex_type& to)
     {
-        unordered_set<vertex_type> visited;
+        /*unordered_set<vertex_type> visited;
         unordered_set<vertex_type> stack;
         stack.insert(from);
         while (!stack.empty()) {
-            int current_vertex = *stack.begin();
+            vertex_type current_vertex = *stack.begin();
             stack.erase(current_vertex);
             visited.insert(current_vertex);
             if (current_vertex == to) {
                 return true;
             }
-            for (int neighbor : map_v[current_vertex]) {
-                if (visited.count(neighbor) == 0) {
-                    stack.insert(neighbor);
+            std::vector<vertex_type> edge = edges(current_vertex);
+            for (auto neighbor : edge) {
+                if (visited.count(neighbor.id2) == 0) {
+                    stack.insert(neighbor.id2);
                 }
             }
-        }
+        }*/
         return false;
     }
 
@@ -328,13 +328,14 @@ void menu2_1()
     cout << "Choose data type for the vertices:" << endl;
     cout << "1. int" << endl;
     cout << "2. double" << endl;
-    cout << "3. string" << endl;
-    cout << "4. float" << endl;
+    cout << "3. float" << endl;
+    cout << "4. string" << endl;
     cout << "5. back main menu " << endl;
     cout << "choice: ";
 }
 void menu3_1()
 {
+    system("cls");
     cout << "1. Add vertice" << endl;
     cout << "2. Remove vertice" << endl;
     cout << "3. Add edge" << endl;
@@ -382,6 +383,7 @@ int main()
                         cin >> ch;
                         if (ch == 1)
                         {
+                            system("cls");
                             cout << "value: ";
                             cin >> val;
                             if (graph.add_vertex(val)) cout << "vertex added successfully" << endl;
@@ -393,6 +395,7 @@ int main()
                         }
                         else if (ch == 2)
                         {
+                            system("cls");
                             cout << "value: ";
                             cin >> val;
                             if (graph.remove_vertex(val)) cout << "vertex deleted successfully" << endl;
@@ -404,6 +407,7 @@ int main()
                         }
                         else if (ch == 3)
                         {
+                            system("cls");
                             cout << "vertex1 : ";
                             cin >> v1;
                             cout << "vertex2 : ";
@@ -419,6 +423,7 @@ int main()
                         }
                         else if (ch == 4)
                         {
+                            system("cls");
                             cout << "vertex1 : ";
                             cin >> v1;
                             cout << "vertex2 : ";
@@ -434,6 +439,7 @@ int main()
                         }
                         else if (ch == 5)
                         {
+                            system("cls");
                             cout << "vertex1 : ";
                             cin >> v1;
                             cout << "vertex2 : ";
@@ -449,6 +455,7 @@ int main()
                         }
                         else if (ch == 6)
                         {
+                            system("cls");
                             cout << "vertex1 : ";
                             cin >> v1;
                             cout << "vertex2 : ";
@@ -462,6 +469,7 @@ int main()
                         }
                         else if (ch == 7)
                         {
+                            system("cls");
                             cout << "degree of graph : " << graph.degree() << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -470,6 +478,7 @@ int main()
                         }
                         else if (ch == 8)
                         {
+                            system("cls");
                             cout << "order of graph : " << graph.order() << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -478,6 +487,7 @@ int main()
                         }
                         else if (ch == 9)
                         {
+                            system("cls");
                             cout << "vertex1 : ";
                             cin >> v1;
                             cout << "vertex2 : ";
@@ -501,6 +511,7 @@ int main()
                         }
                         else if (ch == 10)
                         {
+                            system("cls");
                             cout << "start vertex : ";
                             cin >> val;
                             graph.walk(val, Print<int>);
@@ -511,6 +522,7 @@ int main()
                         }
                         else
                         {
+                            system("cls");
                             cout << "invalid character entered!!!!!!!    try again" << endl;
                             cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -523,114 +535,513 @@ int main()
                 }
                 else if (ch == 2)
                 {
-                    cout << "value: ";
-                    cin >> val;
-                    if (head.erase(val)) cout << "value deleted successfully" << endl;
-                    else cout << "there is no such value in the tree" << endl;
-                    cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-                    choi = _getch();
-                    if (choi == 8) flag2 = true;
+                Graph<double>graph;
+
+
+                flag3 = true;
+                while (flag3)
+                {
+                    double v1 = 0, v2 = 0;
+                    double val = 0;
+                    menu3_1();
+                    cin >> ch;
+                    if (ch == 1)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.add_vertex(val)) cout << "vertex added successfully" << endl;
+                        else cout << "this vertex is already in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 2)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.remove_vertex(val)) cout << "vertex deleted successfully" << endl;
+                        else cout << "there is no such vertex in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 3)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.add_edge(v1, v2, dist)) cout << "edge added successfully" << endl;
+                        else cout << "this vertex is already in the graph or some of the vertices are not in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 4)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        else cout << "edge doesn't exists" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 5)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 6)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.remove_edge(v1, v2)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 7)
+                    {
+                        system("cls");
+                        cout << "degree of graph : " << graph.degree() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 8)
+                    {
+                        system("cls");
+                        cout << "order of graph : " << graph.order() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 9)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.check(v1, v2))
+                        {
+                            std::vector<double> tmp = graph.shortest_path(v1, v2);
+                            for (auto& i : tmp)
+                            {
+                                cout << i << ' ';
+                            }
+                        }
+                        else
+                        {
+                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                        }
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 10)
+                    {
+                        system("cls");
+                        cout << "start vertex : ";
+                        cin >> val;
+                        graph.walk(val, Print<double>);
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else
+                    {
+                        system("cls");
+                        cout << "invalid character entered!!!!!!!    try again" << endl;
+                        cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                }
                 }
                 else if (ch == 3)
                 {
-                    head.print();
-                    cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-                    choi = _getch();
-                    if (choi == 8) flag2 = true;
+                Graph<float>graph;
+
+
+                flag3 = true;
+                while (flag3)
+                {
+                    float v1 = 0, v2 = 0;
+                    float val = 0;
+                    menu3_1();
+                    cin >> ch;
+                    if (ch == 1)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.add_vertex(val)) cout << "vertex added successfully" << endl;
+                        else cout << "this vertex is already in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 2)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.remove_vertex(val)) cout << "vertex deleted successfully" << endl;
+                        else cout << "there is no such vertex in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 3)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.add_edge(v1, v2, dist)) cout << "edge added successfully" << endl;
+                        else cout << "this vertex is already in the graph or some of the vertices are not in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 4)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        else cout << "edge doesn't exists" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 5)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 6)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.remove_edge(v1, v2)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 7)
+                    {
+                        system("cls");
+                        cout << "degree of graph : " << graph.degree() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 8)
+                    {
+                        system("cls");
+                        cout << "order of graph : " << graph.order() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 9)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.check(v1, v2))
+                        {
+                            std::vector<float> tmp = graph.shortest_path(v1, v2);
+                            for (auto& i : tmp)
+                            {
+                                cout << i << ' ';
+                            }
+                        }
+                        else
+                        {
+                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                        }
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 10)
+                    {
+                        system("cls");
+                        cout << "start vertex : ";
+                        cin >> val;
+                        graph.walk(val, Print<float>);
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else
+                    {
+                        system("cls");
+                        cout << "invalid character entered!!!!!!!    try again" << endl;
+                        cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                }
                 }
                 else if (ch == 4)
                 {
-                    cout << "value: ";
-                    cin >> val;
-                    if (head.contains(val)) cout << "this element is present in the tree" << endl;
-                    else cout << "this element is not present in the tree" << endl;
-                    cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-                    choi = _getch();
-                    if (choi == 8) flag2 = true;
+                Graph<std::string>graph;
+
+
+                flag3 = true;
+                while (flag3)
+                {
+                    std::string v1 = 0, v2 = 0;
+                    std::string val = 0;
+                    menu3_1();
+                    cin >> ch;
+                    if (ch == 1)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.add_vertex(val)) cout << "vertex added successfully" << endl;
+                        else cout << "this vertex is already in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 2)
+                    {
+                        system("cls");
+                        cout << "value: ";
+                        cin >> val;
+                        if (graph.remove_vertex(val)) cout << "vertex deleted successfully" << endl;
+                        else cout << "there is no such vertex in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 3)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.add_edge(v1, v2, dist)) cout << "edge added successfully" << endl;
+                        else cout << "this vertex is already in the graph or some of the vertices are not in the graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 4)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        else cout << "edge doesn't exists" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 5)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        cout << "weight: ";
+                        cin >> dist;
+                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 6)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.remove_edge(v1, v2)) cout << "edge deleted successfully" << endl;
+                        else cout << "this edge doesn't exist in graph" << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 7)
+                    {
+                        system("cls");
+                        cout << "degree of graph : " << graph.degree() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 8)
+                    {
+                        system("cls");
+                        cout << "order of graph : " << graph.order() << endl;
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 9)
+                    {
+                        system("cls");
+                        cout << "vertex1 : ";
+                        cin >> v1;
+                        cout << "vertex2 : ";
+                        cin >> v2;
+                        if (graph.check(v1, v2))
+                        {
+                            std::vector<std::string> tmp = graph.shortest_path(v1, v2);
+                            for (auto& i : tmp)
+                            {
+                                cout << i << ' ';
+                            }
+                        }
+                        else
+                        {
+                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                        }
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 10)
+                    {
+                        system("cls");
+                        cout << "start vertex : ";
+                        cin >> val;
+                        graph.walk(val, Print<std::string>);
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else
+                    {
+                        system("cls");
+                        cout << "invalid character entered!!!!!!!    try again" << endl;
+                        cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                }
                 }
                 else if (ch == 5)
                 {
-                    flag2 = false;
+                    flag3 = false;
                 }
                 else
                 {
+                    system("cls");
                     cout << "invalid character entered!!!!!!!    try again" << endl;
                     cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
                     choi = _getch();
-                    if (choi == 8) flag2 = true;
+                    if (choi == 8) flag3 = true;
                 }
             }
         }
-        if (choice == 2)
-        {
-            fill_tree(1000, 100);
-            fill_tree(10000, 100);
-            fill_tree(100000, 100);
-            cout << endl;
-            fill_vector(1000, 100);
-            fill_vector(10000, 100);
-            fill_vector(100000, 100);
-            cout << endl;
-            cout << endl;
-            contains_tree(1000, 1000);
-            contains_tree(10000, 1000);
-            contains_tree(100000, 1000);
-            cout << endl;
-            contains_vector(1000, 1000);
-            contains_vector(10000, 1000);
-            contains_vector(100000, 1000);
-            cout << endl;
-            cout << endl;
-            insert_tree(1000, 1000);
-            insert_tree(10000, 1000);
-            insert_tree(100000, 1000);
-            cout << endl;
-            insert_vector(1000, 1000);
-            insert_vector(10000, 1000);
-            insert_vector(100000, 1000);
-            cout << endl;
-            cout << endl;
-            erase_tree(1000, 1000);
-            erase_tree(10000, 1000);
-            erase_tree(100000, 1000);
-            cout << endl;
-            erase_vector(1000, 1000);
-            erase_vector(10000, 1000);
-            erase_vector(100000, 1000);
-            cout << endl << endl;
-            cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-            choi = _getch();
-            if (choi == 8) flag1 = true;
+        //if (choice == 2)
+        //{
+        //    
 
-        }
-        if (choice == 3)
+        //}
+        if (choice == 3) return 0;
+        else if (choice != 1 && choice != 2 && choice != 3)
         {
-            std::vector<int> myVector = { 1, -3, 2, 7, 11, 63, 99, 2, 0,0, 7, 1, -2, 99, 88, 73, -42, -2, -2, -3, 19, 0 };
-            std::vector<int> new_vector;
-            cout << "vector: ";
-            for (int i = 0; i < 22; i++)
-            {
-                if (head.insert(myVector[i]) == false && find_elem(new_vector, myVector[i]) == false)
-                {
-                    new_vector.push_back(myVector[i]);
-                }
-                cout << myVector[i] << "; ";
-            }
-            cout << endl;
-            cout << "new vector: ";
-            for (int i = 0; i < new_vector.size(); i++)
-            {
-                cout << new_vector[i] << "; ";
-            }
-            cout << endl;
-            cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-            choi = _getch();
-            if (choi == 8) flag1 = true;
-
-        }
-        if (choice == 4) return 0;
-        else if (choice != 1 && choice != 2 && choice != 3 && choice != 4)
-        {
+            system("cls");
             cout << "invalid character entered!!!!!!!    try again" << endl;
             cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
             choi = _getch();
