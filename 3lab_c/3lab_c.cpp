@@ -21,6 +21,7 @@
 #include <iterator>
 #include <functional>
 #include <queue>
+#include<unordered_set>
 using namespace std;
 template<typename vertex_type, typename Distance = double>
 class Graph {
@@ -234,30 +235,50 @@ public:
         }
 
     }
-    size_t check_path()
+    bool check(const vertex_type& from, const vertex_type& to{
+        unordered_set<vertex_type> visited;
+        unordered_set<vertex_type> stack;
+        stack.insert(from);
+        while (!stack.empty()) {
+            int current_vertex = *stack.begin();
+            stack.erase(current_vertex);
+            visited.insert(current_vertex);
+            if (current_vertex == to) {
+                return true;
+            }
+            for (int neighbor : map_v[current_vertex]) {
+                if (visited.count(neighbor) == 0) {
+                    stack.insert(neighbor);
+                }
+            }
+        }
+        return false;
+    }
+
+    std::vector<vertex_type> shortest_path(const vertex_type& from, const vertex_type& to)
     {
         std::map<vertex_type, Distance> distances;
         std::map<vertex_type, vertex_type> prev;
-        for (auto it = map_v.begin(); it != map_v.end(); ++it)
+        for (auto it = map_v.begin(); it != map_v.end(); ++it) 
         {
             distances[it->first] = INT_MAX;
         }
         priority_queue<pair<Distance, vertex_type>, vector<pair<Distance, vertex_type>>, greater<pair<Distance, vertex_type>>> pq;
         distances[from] = 0;
         pq.push({ 0, from });
-        while (!pq.empty())
+        while (!pq.empty()) 
         {
             Distance dist = pq.top().first;
             vertex_type vertex = pq.top().second;
             pq.pop();
-            if (dist > distances[vertex])
+            if (dist > distances[vertex]) 
             {
                 continue;
             }
             for (auto it = map_v[vertex].begin(); it != map_v[vertex].end(); ++it)
             {
                 double newDist = dist + it->second.dist;
-                if (newDist < distances[it->second.id2])
+                if (newDist < distances[it->second.id2]) 
                 {
                     distances[it->second.id2] = newDist;
                     prev[it->second.id2] = vertex;
@@ -265,9 +286,6 @@ public:
                 }
             }
         }
-    }
-    std::vector<vertex_type> shortest_path(const vertex_type& from, const vertex_type& to)
-    {
         vector<vertex_type> path;
         vertex_type current = to;
         while (current != from) 
@@ -458,8 +476,18 @@ int main()
                             cin >> v1;
                             cout << "vertex2 : ";
                             cin >> v2;
-                            if (graph.shortest_path(v1, v2) != NULL) cout << "edge deleted successfully" << endl;
-                            else cout << "this edge doesn't exist in graph" << endl;
+                            if (graph.check(v1, v2))
+                            {
+                                std::vector<int> tmp = graph.shortest_path(v1, v2);
+                                for (auto& i : tmp)
+                                {
+                                    cout << i << ' ';
+                                }
+                            }
+                            else
+                            {
+                                cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                            }
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
                             choi = _getch();
