@@ -225,7 +225,7 @@ public:
             }
         }*/
         walk_(start_vertex);
-        cout << endl;
+        action(start_vertex);
         for (auto& node : visited)
         {
             if (!node.second) 
@@ -235,7 +235,8 @@ public:
         }
 
     }
-    bool check(const vertex_type& from, const vertex_type& to{
+    bool check(const vertex_type& from, const vertex_type& to)
+    {
         unordered_set<vertex_type> visited;
         unordered_set<vertex_type> stack;
         stack.insert(from);
@@ -327,7 +328,7 @@ void menu2_1()
     cout << "Choose data type for the vertices:" << endl;
     cout << "1. int" << endl;
     cout << "2. double" << endl;
-    cout << "3. char" << endl;
+    cout << "3. string" << endl;
     cout << "4. float" << endl;
     cout << "5. back main menu " << endl;
     cout << "choice: ";
@@ -345,6 +346,11 @@ void menu3_1()
     cout << "9. Find the shortest path" << endl;
     cout << "10. DFS" << endl;
     cout << "choice: ";
+}
+template<typename vertex_type, typename Distance = double>
+void Print(const vertex_type& val)
+{
+    cout << val;
 }
 int main()
 {
@@ -495,18 +501,21 @@ int main()
                         }
                         else if (ch == 10)
                         {
-                        cout << "order of graph : " << graph.order() << endl;
-                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
-                        choi = 0;
-                        choi = _getch();
-                        if (choi == 8) flag3 = true;
+                            cout << "start vertex : ";
+                            cin >> val;
+                            graph.walk(val, Print<int>);
+                            cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                            choi = 0;
+                            choi = _getch();
+                            if (choi == 8) flag3 = true;
                         }
                         else
                         {
                             cout << "invalid character entered!!!!!!!    try again" << endl;
                             cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
+                            choi = 0;
                             choi = _getch();
-                            if (choi == 8) flag2 = true;
+                            if (choi == 8) flag3 = true;
                         }
                     }
 
