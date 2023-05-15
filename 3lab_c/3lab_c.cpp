@@ -191,38 +191,32 @@ public:
     std::vector<Edge> edges(const vertex_type& vertex)
     {
         std::vector<Edge> edge_mass;
-        for (auto it1 = map_v[vertex].begin(); it1 != map_v[vertex].end(); ++it1)
+        for (auto i : edges(vertex))
         {
-            edge_mass.push_back(it1->second);
+            edge_mass.push_back(i);
         }
         return edge_mass;
     }
     size_t degree()
     {
         size_t max_edge = -1;
-        for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
+        for (auto i : vertices())
         {
-            std::vector<Edge> tmp_edges = edges(it1->first);
+            std::vector<Edge> tmp_edges = edges(i);
             if (tmp_edges.size() > max_edge) max_edge = tmp_edges.size();
         }
         return max_edge;
     }
     void init()
     {
-        for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
+        for (auto i : vertices())
         {
-            visited[it1->first] = false;
+            visited[i] = false;
         }
     }
     void walk(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
     {
         init();
-        /*for (auto& node : map_v) 
-        {
-            if (node.first == start_vertex && !visited[node.first]) {
-                walk_(node.first);
-            }
-        }*/
         walk_(start_vertex, action);
         action(start_vertex);
         for (auto& node : visited)
@@ -236,7 +230,7 @@ public:
     }
     bool check(const vertex_type& from, const vertex_type& to)
     {
-        /*unordered_set<vertex_type> visited;
+ /*       unordered_set<vertex_type> visited;
         unordered_set<vertex_type> stack;
         stack.insert(from);
         while (!stack.empty()) {
@@ -247,7 +241,7 @@ public:
                 return true;
             }
             std::vector<vertex_type> edge = edges(current_vertex);
-            for (auto neighbor : edge) {
+            for (auto& neighbor : edge) {
                 if (visited.count(neighbor.id2) == 0) {
                     stack.insert(neighbor.id2);
                 }
@@ -260,9 +254,9 @@ public:
     {
         std::map<vertex_type, Distance> distances;
         std::map<vertex_type, vertex_type> prev;
-        for (auto it = map_v.begin(); it != map_v.end(); ++it) 
+        for (auto i : vertices()) 
         {
-            distances[it->first] = INT_MAX;
+            distances[i] = INT_MAX;
         }
         priority_queue<pair<Distance, vertex_type>, vector<pair<Distance, vertex_type>>, greater<pair<Distance, vertex_type>>> pq;
         distances[from] = 0;
@@ -276,14 +270,14 @@ public:
             {
                 continue;
             }
-            for (auto it = map_v[vertex].begin(); it != map_v[vertex].end(); ++it)
+            for (auto i : edges(vertex))
             {
-                double newDist = dist + it->second.dist;
-                if (newDist < distances[it->second.id2]) 
+                double newDist = dist + i.dist;
+                if (newDist < distances[i.id2]) 
                 {
-                    distances[it->second.id2] = newDist;
-                    prev[it->second.id2] = vertex;
-                    pq.push(make_pair(newDist, it->second.id2));
+                    distances[i.id2] = newDist;
+                    prev[i.id2] = vertex;
+                    pq.push(make_pair(newDist, i.id2));
                 }
             }
         }
