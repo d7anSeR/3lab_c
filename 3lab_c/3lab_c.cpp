@@ -124,6 +124,7 @@ public:
         }
         return false;
     }
+
     void Print()
     {
         for (auto it = map_v.begin(); it != map_v.end(); ++it)
@@ -310,7 +311,8 @@ void menu3_1()
     cout << "8. Order of graph" << endl;
     cout << "9. Find the shortest path" << endl;
     cout << "10. DFS" << endl;
-    cout << "11. Back menu" << endl;
+    cout << "11. Print graph" << endl;
+    cout << "12. Back menu" << endl;
     cout << "choice: ";
 }
 template<typename vertex_type, typename Distance = double>
@@ -318,6 +320,11 @@ void Print(const vertex_type& val)
 {
     cout << val;
 }
+//template<typename vertex_type, typename Distance = double>
+//void Vertex_vector(const vertex_type& val, std::vector<vertex_type>vec)
+//{
+//    vec.push_back(val);
+//}
 int main()
 {
     int choice = 0, ch = 0, choi = 0,choose = 0;
@@ -478,12 +485,22 @@ int main()
                             cout << "start vertex : ";
                             cin >> val;
                             graph.walk(val, Print<int>);
+                            /*graph.walk(val, Vertex_vector<int>);*/
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
                             choi = _getch();
                             if (choi == 8) flag3 = true;
                         }
                         else if (ch == 11)
+                        {
+                            system("cls");
+                            graph.Print();
+                            cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                            choi = 0;
+                            choi = _getch();
+                            if (choi == 8) flag3 = true;
+                        }
+                        else if (ch == 12)
                         {
                             flag3 = false;
                         }
@@ -649,6 +666,15 @@ int main()
                     }
                     else if (ch == 11)
                     {
+                        system("cls");
+                        graph.Print();
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 12)
+                    {
                         flag3 = false;
                     }
                     else
@@ -813,6 +839,15 @@ int main()
                     }
                     else if (ch == 11)
                     {
+                        system("cls");
+                        graph.Print();
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 12)
+                    {
                         flag3 = false;
                     }
                     else
@@ -976,6 +1011,15 @@ int main()
                         if (choi == 8) flag3 = true;
                     }
                     else if (ch == 11)
+                    {
+                        system("cls");
+                        graph.Print();
+                        cout << endl << "Press 'Backspace' if want to back" << endl << endl;
+                        choi = 0;
+                        choi = _getch();
+                        if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 12)
                     {
                         flag3 = false;
                     }
