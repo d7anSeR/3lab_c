@@ -1,16 +1,4 @@
-﻿//проверка вершины +
-//добавление вершины +
-//удаление вершины +
-//2 проверки ребра +
-// добаление ребра +
-//2удаления ребра +
-//дейстры +
-//обход в глубину +
-//вернуть вершины+
-//получение всех ребер выходящих из вершины+
-//порядок+
-//степень+
-#include <iostream>
+﻿#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -31,7 +19,7 @@ private:
         vertex_type id1;
         vertex_type id2;
         Distance dist;
-        Edge(vertex_type id1_ = 0,vertex_type id_2 = 0, Distance distance_ = 0) : id1(id1_), id2(id_2), dist(distance_){}
+        Edge(vertex_type id1_ = 0, vertex_type id_2 = 0, Distance distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
     };
     int n;
     std::map<vertex_type, std::map<int,Edge>> map_v;
@@ -40,8 +28,8 @@ private:
     {
         visited[start_vertex] = true;
         action(start_vertex);
-        for (auto it1 = map_v[start_vertex].begin(); it1 != map_v[start_vertex].end(); ++it1) {
-            vertex_type next_node = it1->second.id2;
+        for (auto it1 : edges(start_vertex)) {
+            vertex_type next_node = it1.id2;
             if (!visited[next_node]) {
                 walk_(next_node, action);
             }
@@ -105,9 +93,9 @@ public:
     {
         if (has_vertex(from) && has_vertex(to))
         {
-            for (auto it = map_v[from].begin(); it != map_v[from].end(); ++it)
+            for (auto it : edges(from))
             {
-                if (it->second.id2 == to) return true;
+                if (it.id2 == to) return true;
             }
         }
         return false;
@@ -116,9 +104,9 @@ public:
     {
         if (has_vertex(from) && has_vertex(to))
         {
-            for (auto it = map_v[from].begin(); it != map_v[from].end(); ++it)
+            for (auto it : edges(from))
             {
-                if (it->second.id2 == to && it->second.dist == dist) return true;
+                if (it.id2 == to && it.dist == dist) return true;
             }
         }
         return false;
@@ -126,12 +114,10 @@ public:
     bool add_edge(const vertex_type& from, const vertex_type& to, const Distance& d)
     {
         Edge tmp(from, to, d);
-        if (!has_edge(from, to, d))
+        if (!has_edge(from, to))
         {
             if (has_vertex(from) && has_vertex(to))
             {
-                auto it = map_v[from].begin();
-                int n_map = 0;
                 map_v[from][map_v[from].size()] = tmp;
                 return true;
             }
@@ -182,28 +168,30 @@ public:
     std::vector<vertex_type> vertices() const
     {
         std::vector<vertex_type> vert_mass;
-        for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
+        for (auto i = map_v.begin(); i != map_v.end(); ++i)
         {
-            vert_mass.push_back(it1->first);
+            vert_mass.push_back(i->first);
         }
         return vert_mass;
     }
     std::vector<Edge> edges(const vertex_type& vertex)
     {
         std::vector<Edge> edge_mass;
-        for (auto i : edges(vertex))
+        for (auto i = map_v[vertex].begin(); i != map_v[vertex].end(); ++i)
         {
-            edge_mass.push_back(i);
+            edge_mass.push_back(i->second);
         }
         return edge_mass;
     }
     size_t degree()
     {
-        size_t max_edge = -1;
+        int max_edge = -1;
         for (auto i : vertices())
         {
             std::vector<Edge> tmp_edges = edges(i);
-            if (tmp_edges.size() > max_edge) max_edge = tmp_edges.size();
+            int size = tmp_edges.size();
+            if (size > max_edge) 
+                max_edge = size;
         }
         return max_edge;
     }
@@ -218,7 +206,6 @@ public:
     {
         init();
         walk_(start_vertex, action);
-        action(start_vertex);
         for (auto& node : visited)
         {
             if (!node.second) 
@@ -230,7 +217,7 @@ public:
     }
     bool check(const vertex_type& from, const vertex_type& to)
     {
- /*       unordered_set<vertex_type> visited;
+        unordered_set<vertex_type> visited;
         unordered_set<vertex_type> stack;
         stack.insert(from);
         while (!stack.empty()) {
@@ -240,16 +227,14 @@ public:
             if (current_vertex == to) {
                 return true;
             }
-            std::vector<vertex_type> edge = edges(current_vertex);
-            for (auto& neighbor : edge) {
+            for (auto& neighbor : edges(current_vertex)) {
                 if (visited.count(neighbor.id2) == 0) {
                     stack.insert(neighbor.id2);
                 }
             }
-        }*/
+        }
         return false;
     }
-
     std::vector<vertex_type> shortest_path(const vertex_type& from, const vertex_type& to)
     {
         std::map<vertex_type, Distance> distances;
@@ -291,21 +276,6 @@ public:
         path.push_back(from);
         std::reverse(path.begin(), path.end());
         return path;
-           /* for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
-            {
-                if (it1->first == vertex)
-                {
-                    for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
-                    {
-                        double newDist = dist + it2->second.dist;
-                        if (newDist < distances[it2->second.id2]) {
-                            distances[it2->second.id2] = newDist;
-                            pq.push({ newDist, it2->second.id2 });
-                        }
-                    }
-                }
-                break;
-            }*/
     }
 };
 void menu1()
@@ -340,6 +310,7 @@ void menu3_1()
     cout << "8. Order of graph" << endl;
     cout << "9. Find the shortest path" << endl;
     cout << "10. DFS" << endl;
+    cout << "11. Back menu" << endl;
     cout << "choice: ";
 }
 template<typename vertex_type, typename Distance = double>
@@ -366,8 +337,6 @@ int main()
                 if (ch == 1)
                 {
                     Graph<int>graph;
-
-
                     flag3 = true;
                     while (flag3)
                     {
@@ -424,7 +393,7 @@ int main()
                             cin >> v2;
                             cout << "weight: ";
                             cin >> dist;
-                            if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                            if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
                             else cout << "edge doesn't exists" << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -514,6 +483,10 @@ int main()
                             choi = _getch();
                             if (choi == 8) flag3 = true;
                         }
+                        else if (ch == 11)
+                        {
+                            flag3 = false;
+                        }
                         else
                         {
                             system("cls");
@@ -524,14 +497,10 @@ int main()
                             if (choi == 8) flag3 = true;
                         }
                     }
-
-                    
                 }
                 else if (ch == 2)
                 {
                 Graph<double>graph;
-
-
                 flag3 = true;
                 while (flag3)
                 {
@@ -588,7 +557,7 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -672,11 +641,15 @@ int main()
                         system("cls");
                         cout << "start vertex : ";
                         cin >> val;
-                        graph.walk(val, Print<double>);
+                        graph.walk(val, Print <double> );
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
                         choi = _getch();
                         if (choi == 8) flag3 = true;
+                    }
+                    else if (ch == 11)
+                    {
+                        flag3 = false;
                     }
                     else
                     {
@@ -692,8 +665,6 @@ int main()
                 else if (ch == 3)
                 {
                 Graph<float>graph;
-
-
                 flag3 = true;
                 while (flag3)
                 {
@@ -750,7 +721,7 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -840,6 +811,10 @@ int main()
                         choi = _getch();
                         if (choi == 8) flag3 = true;
                     }
+                    else if (ch == 11)
+                    {
+                        flag3 = false;
+                    }
                     else
                     {
                         system("cls");
@@ -854,13 +829,11 @@ int main()
                 else if (ch == 4)
                 {
                 Graph<std::string>graph;
-
-
                 flag3 = true;
                 while (flag3)
                 {
-                    std::string v1 = 0, v2 = 0;
-                    std::string val = 0;
+                    std::string v1 = "", v2 = "";
+                    std::string val = "";
                     menu3_1();
                     cin >> ch;
                     if (ch == 1)
@@ -912,7 +885,7 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2)) cout << "edge exists" << endl;
+                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -1002,6 +975,10 @@ int main()
                         choi = _getch();
                         if (choi == 8) flag3 = true;
                     }
+                    else if (ch == 11)
+                    {
+                        flag3 = false;
+                    }
                     else
                     {
                         system("cls");
@@ -1015,7 +992,7 @@ int main()
                 }
                 else if (ch == 5)
                 {
-                    flag3 = false;
+                    flag2 = false;
                 }
                 else
                 {
