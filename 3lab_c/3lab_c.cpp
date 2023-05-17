@@ -1,4 +1,8 @@
-﻿#include <iostream>
+﻿//б)сделать доп
+//сделать нормальный вывод
+//разобраться с string
+//задание доделать
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -10,6 +14,7 @@
 #include <functional>
 #include <queue>
 #include<unordered_set>
+#include <algorithm>
 using namespace std;
 template<typename vertex_type, typename Distance = double>
 class Graph {
@@ -51,6 +56,18 @@ public:
         }
         return out;
     }
+    //friend std::ostream& operator<< (std::ostream& out, Graph<vertex_type>graph)
+    //{
+    //    for (auto i : graph.vertices())
+    //    {
+    //        out << endl << '[' << i << ']';
+    //        for (auto j : graph.edges(i))
+    //        {
+    //            out << '->' << '[' << j.id2 << ']-' << j.dist;
+    //        }
+    //    }
+    //    return out;
+    //}
     bool has_vertex(const vertex_type& v) const
     {
         if (n == 0) return false;
@@ -278,6 +295,38 @@ public:
         std::reverse(path.begin(), path.end());
         return path;
     }
+    double Get_length_path(const vertex_type&  v1, const vertex_type&  v2) const
+    {
+        for (auto i : edges(v1))
+        {
+            if (i.id2 == v2) return i.dist;
+        }
+    }
+    vertex_type findV_task()
+    {
+        std::map<vertex_type, double>map_path;
+        for (auto i : vertices())
+        {
+            map_path[i] = 0;
+            for (auto j : vertices())
+            {
+                if (i != j)
+                {
+                    std::vector<vertex_type> tmp = shortest_path(i, j);
+                    for (int k = 0; k < tmp.size() - 1; k++)
+                    {
+                        map_path[i] += Get_length_path(tmp[k], tmp[k + 1]);
+                    }
+                    
+                }
+            }
+        }
+        auto pr = std::max_element(map_path.begin(), map_path.end(), [](const auto& x, const auto& y) {
+            return x.second < y.second;
+        });
+        return pr->first;
+    }
+
 };
 void menu1()
 {
@@ -472,7 +521,7 @@ int main()
                             }
                             else
                             {
-                                cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                                cout << "unpossibly to go from vertex1 to vertex2" << endl;
                             }
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -646,7 +695,7 @@ int main()
                         }
                         else
                         {
-                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                            cout << "unpossibly to go from vertex1 to vertex2" << endl;
                         }
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -819,7 +868,7 @@ int main()
                         }
                         else
                         {
-                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                            cout << "unpossibly to go from vertex1 to vertex2" << endl;
                         }
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -992,7 +1041,7 @@ int main()
                         }
                         else
                         {
-                            cout << "unpossibly to go from vertex1 tovertex2" << endl;
+                            cout << "unpossibly to go from vertex1 to vertex2" << endl;
                         }
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
