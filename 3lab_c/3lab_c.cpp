@@ -1,7 +1,5 @@
 ﻿//б)сделать доп
-//сделать нормальный вывод
 //разобраться с string
-//задание доделать
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -295,7 +293,7 @@ public:
         std::reverse(path.begin(), path.end());
         return path;
     }
-    double Get_length_path(const vertex_type&  v1, const vertex_type&  v2) const
+    double Get_length_path(const vertex_type&  v1, const vertex_type&  v2) 
     {
         for (auto i : edges(v1))
         {
@@ -305,12 +303,14 @@ public:
     vertex_type findV_task()
     {
         std::map<vertex_type, double>map_path;
+        double minim = INT_MAX;
+        vertex_type id_ = 0;
         for (auto i : vertices())
         {
             map_path[i] = 0;
             for (auto j : vertices())
             {
-                if (i != j)
+                if (i != j && check(i, j))
                 {
                     std::vector<vertex_type> tmp = shortest_path(i, j);
                     for (int k = 0; k < tmp.size() - 1; k++)
@@ -319,12 +319,21 @@ public:
                     }
                     
                 }
+                if(!check(i, j))
+                {
+                    map_path[i] = INT_MAX;
+                }
             }
         }
-        auto pr = std::max_element(map_path.begin(), map_path.end(), [](const auto& x, const auto& y) {
-            return x.second < y.second;
-        });
-        return pr->first;
+        for (auto i : map_path)
+        {
+            if (i.second < minim)
+            {
+                minim = i.second;
+                id_ = i.first;
+            }
+        }
+        return id_;
     }
 
 };
@@ -1097,11 +1106,31 @@ int main()
                 }
             }
         }
-        //if (choice == 2)
-        //{
-        //    
+        if (choice == 2)
+        {
+            Graph<int>graph;
+            graph.add_vertex(1);
+            graph.add_vertex(2);
+            graph.add_vertex(3);
+            graph.add_vertex(4);
+            graph.add_vertex(5);
+            graph.add_vertex(6);
+            graph.add_edge(1, 2, 3);
+            graph.add_edge(1, 4, 8);
+            graph.add_edge(2, 1, 2);
+            graph.add_edge(2, 5, 5);
+            graph.add_edge(2, 3, 6);
+            graph.add_edge(4, 6, 7);
+            graph.add_edge(5, 4, 5);
+            graph.add_edge(5, 3, 9);
+            graph.add_edge(6, 5, 1);
+            graph.add_edge(6, 2, 7);
+            cout << "Point: " << graph.findV_task() << endl;
+            cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
+            choi = _getch();
+            if (choi == 8) flag1 = true;
 
-        //}
+        }
         if (choice == 3) return 0;
         else if (choice != 1 && choice != 2 && choice != 3)
         {
