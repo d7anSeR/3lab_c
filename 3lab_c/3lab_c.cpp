@@ -1,6 +1,4 @@
-﻿//б)сделать доп
-//разобраться с string
-#include <iostream>
+﻿#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -15,17 +13,53 @@
 #include <algorithm>
 using namespace std;
 template<typename vertex_type, typename Distance = double>
+struct Edge
+{
+    vertex_type id1;
+    vertex_type id2;
+    Distance dist;
+    Edge(vertex_type id1_ = 0, vertex_type id_2 = 0, Distance distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
+    friend std::ostream& operator<< (std::ostream& out, const Edge<vertex_type>& e)
+    {
+        out << "(" << e.id1 << ", " << e.id2 << "; " << e.dist << ')';
+        return out;
+    }
+    friend std::ostream& operator<< (std::ostream& out, const std::map<int, Edge<vertex_type>>& map)
+    {
+        for (auto it = map.begin(); it != map.end(); ++it)
+        {
+            out << it->second;
+        }
+        return out;
+    }
+};
+template<>
+struct Edge <std::string, double>
+{
+    std::string id1;
+    std::string id2;
+    double dist;
+    Edge(std::string id1_ = "", std::string id_2 = "", double distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
+    friend std::ostream& operator<< (std::ostream& out, const Edge<std::string>& e)
+    {
+        out << "(" << e.id1 << ", " << e.id2 << "; " << e.dist << ')';
+        return out;
+    }
+    friend std::ostream& operator<< (std::ostream& out, const std::map<int, Edge<std::string>>& map)
+    {
+        for (auto it = map.begin(); it != map.end(); ++it)
+        {
+            out << it->second;
+        }
+        return out;
+    }
+};
+template<typename vertex_type, typename Distance = double>
 class Graph {
 private:
-    struct Edge 
-    {
-        vertex_type id1;
-        vertex_type id2;
-        Distance dist;
-        Edge(vertex_type id1_ = 0, vertex_type id_2 = 0, Distance distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
-    };
+    
     int n;
-    std::map<vertex_type, std::map<int,Edge>> map_v;
+    std::map<vertex_type, std::map<int,Edge<vertex_type>>> map_v;
     std::map<vertex_type, bool>visited;
     void walk_(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
     {
@@ -41,31 +75,14 @@ private:
     }
 public:
     Graph(int n_vert = 0) : n(n_vert) {}
-    friend std::ostream& operator<< (std::ostream& out, const Edge& e)
+    friend std::ostream& operator<< (std::ostream& out, Graph<vertex_type>graph)
     {
-        out << "-(" << e.id1 << ", " << e.id2 << "; " << e.dist << ')';
-        return out;
-    }
-    friend std::ostream& operator<< (std::ostream& out, const std::map<int, Edge>& map)
-    {
-        for (auto it = map.begin(); it != map.end(); ++it)
+        for (auto it = graph.map_v.begin(); it != graph.map_v.end(); ++it)
         {
-            out << it->first << ':' << it->second ;
+            out << endl << '[' << it->first << ']' << '-' << it->second;
         }
         return out;
     }
-    //friend std::ostream& operator<< (std::ostream& out, Graph<vertex_type>graph)
-    //{
-    //    for (auto i : graph.vertices())
-    //    {
-    //        out << endl << '[' << i << ']';
-    //        for (auto j : graph.edges(i))
-    //        {
-    //            out << '->' << '[' << j.id2 << ']-' << j.dist;
-    //        }
-    //    }
-    //    return out;
-    //}
     bool has_vertex(const vertex_type& v) const
     {
         if (n == 0) return false;
@@ -76,7 +93,7 @@ public:
     {
         if (!has_vertex(v))
         {
-            std::map<int, Edge> mass;
+            std::map<int, Edge<vertex_type>> mass;
             map_v[v] = mass;
             n++;
             return true;
@@ -115,21 +132,21 @@ public:
         }
         return false;
     }
-    bool has_edge(const vertex_type& from, const vertex_type& to, const Distance& dist)
+    bool has_edge(const Edge<vertex_type> &e)
     {
-        if (has_vertex(from) && has_vertex(to))
+        if (has_vertex(e.id1) && has_vertex(e.id2))
         {
-            for (auto it : edges(from))
+            for (auto it : edges(e.id1))
             {
-                if (it.id2 == to && it.dist == dist) return true;
+                if (it.id2 == e.id2 && it.dist == e.dist) return true;
             }
         }
         return false;
     }
     bool add_edge(const vertex_type& from, const vertex_type& to, const Distance& d)
     {
-        Edge tmp(from, to, d);
-        if (!has_edge(from, to))
+        Edge<vertex_type> tmp(from, to, d);
+        if (!has_edge(tmp))
         {
             if (has_vertex(from) && has_vertex(to))
             {
@@ -162,15 +179,15 @@ public:
         }
         return false;
     }
-    bool remove_edge(const vertex_type& from, const vertex_type& to, const Distance& dist)
+    bool remove_edge(const Edge<vertex_type>&e)
     {
-        if (has_edge(from, to, dist))
+        if (has_edge(e))
         {
-            for (auto it1 = map_v[from].begin(); it1 != map_v[from].end(); ++it1)
+            for (auto it1 = map_v[e.id1].begin(); it1 != map_v[e.id1].end(); ++it1)
             {
-                if (it1->second.id2 == to && it1->second.dist == dist)
+                if (it1->second.id2 == e.id2 && it1->second.dist == e.dist)
                 {
-                    map_v[from].erase(it1);
+                    map_v[e.id1].erase(it1);
                     return true;
                 }
             }
@@ -190,9 +207,9 @@ public:
         }
         return vert_mass;
     }
-    std::vector<Edge> edges(const vertex_type& vertex)
+    std::vector<Edge<vertex_type>> edges(const vertex_type& vertex)
     {
-        std::vector<Edge> edge_mass;
+        std::vector<Edge<vertex_type>> edge_mass;
         for (auto i = map_v[vertex].begin(); i != map_v[vertex].end(); ++i)
         {
             edge_mass.push_back(i->second);
@@ -204,7 +221,7 @@ public:
         int max_edge = -1;
         for (auto i : vertices())
         {
-            std::vector<Edge> tmp_edges = edges(i);
+            std::vector<Edge<vertex_type>> tmp_edges = edges(i);
             int size = tmp_edges.size();
             if (size > max_edge) 
                 max_edge = size;
@@ -376,7 +393,7 @@ void menu3_1()
 template<typename vertex_type, typename Distance = double>
 void Print(const vertex_type& val)
 {
-    cout << val;
+    cout << val << ' ';
 }
 //template<typename vertex_type, typename Distance = double>
 //void Vertex_vector(const vertex_type& val, std::vector<vertex_type>vec)
@@ -458,7 +475,8 @@ int main()
                             cin >> v2;
                             cout << "weight: ";
                             cin >> dist;
-                            if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
+                            Edge<int> e(v1, v2, dist);
+                            if (graph.has_edge(e)) cout << "edge exists" << endl;
                             else cout << "edge doesn't exists" << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -474,7 +492,8 @@ int main()
                             cin >> v2;
                             cout << "weight: ";
                             cin >> dist;
-                            if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                            Edge<int> e(v1, v2, dist);
+                            if (graph.remove_edge(e)) cout << "edge deleted successfully" << endl;
                             else cout << "this edge doesn't exist in graph" << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
@@ -552,7 +571,7 @@ int main()
                         else if (ch == 11)
                         {
                             system("cls");
-                            graph.Print();
+                            cout << graph << endl;
                             cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                             choi = 0;
                             choi = _getch();
@@ -632,7 +651,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
+                        Edge<double> e(v1, v2, dist);
+                        if (graph.has_edge(e)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -648,7 +668,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        Edge<double> e(v1, v2, dist);
+                        if (graph.remove_edge(e)) cout << "edge deleted successfully" << endl;
                         else cout << "this edge doesn't exist in graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -725,7 +746,7 @@ int main()
                     else if (ch == 11)
                     {
                         system("cls");
-                        graph.Print();
+                        cout << graph << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
                         choi = _getch();
@@ -805,7 +826,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
+                        Edge<float> e(v1, v2, dist);
+                        if (graph.has_edge(e)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -821,7 +843,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        Edge<float> e(v1, v2, dist);
+                        if (graph.remove_edge(e)) cout << "edge deleted successfully" << endl;
                         else cout << "this edge doesn't exist in graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -898,7 +921,7 @@ int main()
                     else if (ch == 11)
                     {
                         system("cls");
-                        graph.Print();
+                        cout << graph << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
                         choi = _getch();
@@ -978,7 +1001,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.has_edge(v1, v2, dist)) cout << "edge exists" << endl;
+                        Edge<std::string> e(v1, v2, dist);
+                        if (graph.has_edge(e)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -994,7 +1018,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
-                        if (graph.remove_edge(v1, v2, dist)) cout << "edge deleted successfully" << endl;
+                        Edge<std::string> e(v1, v2, dist);
+                        if (graph.remove_edge(e)) cout << "edge deleted successfully" << endl;
                         else cout << "this edge doesn't exist in graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
@@ -1071,7 +1096,7 @@ int main()
                     else if (ch == 11)
                     {
                         system("cls");
-                        graph.Print();
+                        cout << graph << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
                         choi = _getch();
@@ -1129,7 +1154,6 @@ int main()
             cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
             choi = _getch();
             if (choi == 8) flag1 = true;
-
         }
         if (choice == 3) return 0;
         else if (choice != 1 && choice != 2 && choice != 3)
