@@ -58,7 +58,6 @@ template<typename vertex_type, typename Distance = double>
 class Graph {
 private:
     
-    int n;
     std::map<vertex_type, std::map<int,Edge<vertex_type>>> map_v;
     std::map<vertex_type, bool>visited;
     void walk_(const vertex_type& start_vertex, std::function<void(const vertex_type&)> action)
@@ -74,7 +73,7 @@ private:
 
     }
 public:
-    Graph(int n_vert = 0) : n(n_vert) {}
+    Graph() {}
     friend std::ostream& operator<< (std::ostream& out, Graph<vertex_type>graph)
     {
         for (auto it = graph.map_v.begin(); it != graph.map_v.end(); ++it)
@@ -95,7 +94,6 @@ public:
         {
             std::map<int, Edge<vertex_type>> mass;
             map_v[v] = mass;
-            n++;
             return true;
         }
         return false;
@@ -105,7 +103,6 @@ public:
         if (has_vertex(v))
         {
             map_v.erase(v);
-            n--;
             for (auto it1 = map_v.begin(); it1 != map_v.end(); ++it1)
             {
                 for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
