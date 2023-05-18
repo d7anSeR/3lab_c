@@ -276,13 +276,13 @@ public:
         {
             distances[i] = INT_MAX;
         }
-        priority_queue<pair<Distance, vertex_type>, vector<pair<Distance, vertex_type>>, greater<pair<Distance, vertex_type>>> pq;
+        queue<pair<Distance, vertex_type>> pq;
         distances[from] = 0;
         pq.push({ 0, from });
         while (!pq.empty()) 
         {
-            Distance dist = pq.top().first;
-            vertex_type vertex = pq.top().second;
+            Distance dist = pq.front().first;
+            vertex_type vertex = pq.front().second;
             pq.pop();
             if (dist > distances[vertex]) 
             {
