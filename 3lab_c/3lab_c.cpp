@@ -957,6 +957,7 @@ int main()
                         system("cls");
                         cout << "value: ";
                         cin >> val;
+                        std::transform(val.begin(), val.end(), val.begin(), tolower);
                         if (graph.add_vertex(val)) cout << "vertex added successfully" << endl;
                         else cout << "this vertex is already in the graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
@@ -969,6 +970,7 @@ int main()
                         system("cls");
                         cout << "value: ";
                         cin >> val;
+                        std::transform(val.begin(), val.end(), val.begin(), tolower);
                         if (graph.remove_vertex(val)) cout << "vertex deleted successfully" << endl;
                         else cout << "there is no such vertex in the graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
@@ -985,6 +987,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
+                        std::transform(v1.begin(), v1.end(), v1.begin(), tolower);
+                        std::transform(v2.begin(), v2.end(), v2.begin(), tolower);
                         if (graph.add_edge(v1, v2, dist)) cout << "edge added successfully" << endl;
                         else cout << "this vertex is already in the graph or some of the vertices are not in the graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
@@ -1001,6 +1005,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
+                        std::transform(v1.begin(), v1.end(), v1.begin(), tolower);
+                        std::transform(v2.begin(), v2.end(), v2.begin(), tolower);
                         Edge<std::string> e(v1, v2, dist);
                         if (graph.has_edge(e)) cout << "edge exists" << endl;
                         else cout << "edge doesn't exists" << endl;
@@ -1018,6 +1024,8 @@ int main()
                         cin >> v2;
                         cout << "weight: ";
                         cin >> dist;
+                        std::transform(v1.begin(), v1.end(), v1.begin(), tolower);
+                        std::transform(v2.begin(), v2.end(), v2.begin(), tolower);
                         Edge<std::string> e(v1, v2, dist);
                         if (graph.remove_edge(e)) cout << "edge deleted successfully" << endl;
                         else cout << "this edge doesn't exist in graph" << endl;
@@ -1033,6 +1041,8 @@ int main()
                         cin >> v1;
                         cout << "vertex2 : ";
                         cin >> v2;
+                        std::transform(v1.begin(), v1.end(), v1.begin(), tolower);
+                        std::transform(v2.begin(), v2.end(), v2.begin(), tolower);
                         if (graph.remove_edge(v1, v2)) cout << "edge deleted successfully" << endl;
                         else cout << "this edge doesn't exist in graph" << endl;
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
@@ -1065,6 +1075,8 @@ int main()
                         cin >> v1;
                         cout << "vertex2 : ";
                         cin >> v2;
+                        std::transform(v1.begin(), v1.end(), v1.begin(), tolower);
+                        std::transform(v2.begin(), v2.end(), v2.begin(), tolower);
                         if (graph.check(v1, v2))
                         {
                             std::vector<std::string> tmp = graph.shortest_path(v1, v2);
@@ -1087,6 +1099,7 @@ int main()
                         system("cls");
                         cout << "start vertex : ";
                         cin >> val;
+                        std::transform(val.begin(), val.end(), val.begin(), tolower);
                         graph.walk(val, Print<std::string>);
                         cout << endl << "Press 'Backspace' if want to back" << endl << endl;
                         choi = 0;
