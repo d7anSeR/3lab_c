@@ -21,7 +21,7 @@ struct Edge
     Edge(vertex_type id1_ = 0, vertex_type id_2 = 0, Distance distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
     friend std::ostream& operator<< (std::ostream& out, const Edge<vertex_type>& e)
     {
-        out << "(" << e.id1 << ", " << e.id2 << "; " << e.dist << ')';
+        out << "->(" << e.id1 << ", " << e.id2 << "; " << e.dist << ")";
         return out;
     }
     friend std::ostream& operator<< (std::ostream& out, const std::map<int, Edge<vertex_type>>& map)
@@ -42,7 +42,7 @@ struct Edge <std::string, double>
     Edge(std::string id1_ = "", std::string id_2 = "", double distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
     friend std::ostream& operator<< (std::ostream& out, const Edge<std::string>& e)
     {
-        out << "(" << e.id1 << ", " << e.id2 << "; " << e.dist << ')';
+        out << "->(" << e.id1 << ", " << e.id2 << "; " << e.dist << ")";
         return out;
     }
     friend std::ostream& operator<< (std::ostream& out, const std::map<int, Edge<std::string>>& map)
@@ -79,7 +79,7 @@ public:
     {
         for (auto it = graph.map_v.begin(); it != graph.map_v.end(); ++it)
         {
-            out << endl << '[' << it->first << ']' << '-' << it->second;
+            out << endl << '[' << it->first << ']' << ':' << it->second;
         }
         return out;
     }
@@ -157,13 +157,6 @@ public:
         return false;
     }
 
-    void Print()
-    {
-        for (auto it = map_v.begin(); it != map_v.end(); ++it)
-        {
-            cout << it->first << ':' << it->second << endl;
-        }
-    }
     bool remove_edge(const vertex_type& from, const vertex_type& to)
     {
         if (has_edge(from, to))
@@ -1163,6 +1156,7 @@ int main()
             graph.add_edge(5, 3, 9);
             graph.add_edge(6, 5, 1);
             graph.add_edge(6, 2, 7);
+            cout << graph << endl;
             cout << "Point: " << graph.findV_task() << endl;
             cout << endl << endl << "Press 'Backspace' if want to back" << endl << endl;
             choi = _getch();
